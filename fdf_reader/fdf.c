@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:56:50 by tblochet          #+#    #+#             */
-/*   Updated: 2024/11/15 13:31:09 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/11/15 18:22:49 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,28 +28,28 @@ static int	fdf_count_points_in_raw(char *line)
 	return (nmemb);
 }
 
-static void	fdf_parse_line(char *line, int lc, t_fdf_file *fdf)
+static void	fdf_parse_line(char *line, int lc, t_ottolist **lst)
 {
 	int			nmemb;
-	int			offset;
+	int			i;
 	t_raw_data	*data;
-	t_list		*lst;
 
 	nmemb = fdf_count_points_in_raw(line);
-	offset = 0;
+	i = -1;
 	data = ft_calloc(1, sizeof(t_raw_data));
 	if (!data)
 		perror("ALLOC_ERROR");
-	while (nmemb--)
+	while (line[++i] && line[i] != '\n')
 	{
-		data->parsed = ft_dupuntil(line + offset, ' ');
+		if (line[i] == ' ')
+			continue ;
+		data->parsed = ft_dupuntil(&line[i], ' ');
 		data->len = ft_strlen(data->parsed);
-		data->x = offset;
+		data->x = i;
 		data->y = lc;
-		offset = ft_strchr(line, ' ') - line;
-		lst = ft_lstnew(data);
-		ft_lstadd_back(&fdf->raw_data, lst);
+		list_append(data, lst);
 		data = ft_calloc(1, sizeof(t_raw_data));
+		i += data->len + 1;
 	}
 }
 
@@ -65,12 +65,12 @@ t_fdf_file	*fdf_parse_file(char const *path)
 	f = ft_calloc(1, sizeof(t_fdf_file));
 	if (!f)
 		return (0);
-	f->raw_data = ft_lstnew(0);
+	f->raw_data = list_new();
 	l = get_next_line(fd);
 	lc = 0;
 	while (l)
 	{
-		fdf_parse_line(l, lc, f);
+		fdf_parse_line(l, lc, &f->raw_data);
 		f->width = ft_strlen(l);
 		l = get_next_line(fd);
 		lc++;

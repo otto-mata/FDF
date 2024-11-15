@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 13:28:27 by tblochet          #+#    #+#             */
-/*   Updated: 2024/11/15 13:33:23 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/11/15 18:41:14 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,16 @@ void putstr_wrapper(void *content)
 
 int main(void)
 {
-	t_fdf_file *f = fdf_parse_file("./test_maps/42.fdf");
-	printf("%d x %d\n", f->width, f->height);
-	ft_lstiter(f->raw_data, putstr_wrapper);
+	t_fdf_file	*f = fdf_parse_file("./test_maps/42.fdf");
+	t_map3		*clean_map = fdf_convert_raw_data(f);
+	t_ottolist	*lst = clean_map->points;
+	t_point3	*point;
+	
+	for (int i = 0; i < lst->len; i++)
+	{
+		point = lst->content[i];
+		printf("p3{%f, %f, %f}\n", point->x, point->y, point->z);
+	}
+	
 	return 0;
 }
