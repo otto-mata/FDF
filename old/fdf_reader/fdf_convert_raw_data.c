@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 18:24:25 by tblochet          #+#    #+#             */
-/*   Updated: 2024/11/15 18:38:34 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/08 02:34:13 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,5 +37,8 @@ t_map3	*fdf_convert_raw_data(t_fdf_file *file_data)
 		point = ft_calloc(1, sizeof(t_point3));
 		i++;
 	}
+	mapped->height = file_data->height;
+	mapped->width = i / mapped->height;
+	mapped->points_n = i;
 	return (mapped);
 }

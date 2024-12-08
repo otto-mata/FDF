@@ -6,50 +6,54 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:56:50 by tblochet          #+#    #+#             */
-/*   Updated: 2024/11/15 18:22:49 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/08 02:50:27 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-static int	fdf_count_points_in_raw(char *line)
+char	*ft_dupword(char *src)
 {
-	int	nmemb;
-	int	i;
+	char	*dest;
+	size_t	src_len;
+	size_t	i;
 
 	i = 0;
-	nmemb = 0;
-	while (line[i])
+	src_len = ft_strlen(src);
+	dest = ft_calloc(src_len + 1, sizeof(char));
+	if (!dest)
+		return (0);
+	while (src[i] && src[i] != ' ' && src[i] != '\n')
 	{
-		if (line[i] != ' ' && (i == 0 || line[i - 1] == ' '))
-			nmemb++;
+		dest[i] = src[i];
 		i++;
 	}
-	return (nmemb);
+	return (dest);
 }
 
 static void	fdf_parse_line(char *line, int lc, t_ottolist **lst)
 {
-	int			nmemb;
 	int			i;
+	int			x;
 	t_raw_data	*data;
 
-	nmemb = fdf_count_points_in_raw(line);
 	i = -1;
 	data = ft_calloc(1, sizeof(t_raw_data));
 	if (!data)
 		perror("ALLOC_ERROR");
+	x = 0;
 	while (line[++i] && line[i] != '\n')
 	{
 		if (line[i] == ' ')
 			continue ;
-		data->parsed = ft_dupuntil(&line[i], ' ');
+		data->parsed = ft_dupword(&line[i]);
 		data->len = ft_strlen(data->parsed);
-		data->x = i;
+		data->x = x;
 		data->y = lc;
+		i += data->len;
 		list_append(data, lst);
 		data = ft_calloc(1, sizeof(t_raw_data));
-		i += data->len + 1;
+		x++;
 	}
 }
 
@@ -71,7 +75,6 @@ t_fdf_file	*fdf_parse_file(char const *path)
 	while (l)
 	{
 		fdf_parse_line(l, lc, &f->raw_data);
-		f->width = ft_strlen(l);
 		l = get_next_line(fd);
 		lc++;
 	}

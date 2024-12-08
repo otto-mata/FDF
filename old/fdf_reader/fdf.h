@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:57:24 by tblochet          #+#    #+#             */
-/*   Updated: 2024/11/15 19:14:42 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/07 23:31:37 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,10 @@ typedef struct s_map3
 	int			height;
 	int			zmin;
 	int			zmax;
+	int			points_n;
+	int			square_n;
 }				t_map3;
 
 t_fdf_file	*fdf_parse_file(char const *path);
 t_map3		*fdf_convert_raw_data(t_fdf_file *file_data);
-
 #endif
