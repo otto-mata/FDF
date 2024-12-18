@@ -6,53 +6,116 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:45:15 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/18 01:15:27 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/18 12:54:27 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
+#define DRAW_NEIGHBORS 1
+#include <sys/time.h>
 
-bool	draw_square(t_ipoint square[4])
+long long	timeInMilliseconds(void)
 {
-	for (size_t i = 0; i < 4; i++)
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return (((long long)tv.tv_sec) * 1000) + (tv.tv_usec / 1000);
+}
+
+int	key_press(int keycode)
+{
+	t_engine		*engine;
+	static double	offset = 0.5;
+
+	engine = engine_instance();
+	if (!engine)
+		return (1);
+	printf("key: %d\n", keycode);
+	if (keycode == 'e')
+		engine->rot_x += offset;
+	if (keycode == 'd')
+		engine->rot_x -= offset;
+	if (keycode == 'r')
+		engine->rot_y += offset;
+	if (keycode == 'f')
+		engine->rot_y -= offset;
+	if (keycode == 't')
+		engine->rot_z += offset;
+	if (keycode == 'g')
+		engine->rot_z -= offset;
+	if (keycode == 65451)
+		offset += 0.5;
+	if (keycode == 65453)
+		offset -= 0.5;
+	return (0);
+}
+
+int	draw_loop(t_grid_node *node) // 70 32 12
+{
+	int color;
+	int i;
+	t_engine *engine;
+	char s_x[64];
+	char s_y[64];
+	char s_z[64];
+
+	engine = engine_instance();
+	if (!engine)
+		return (1);
+	sprintf(s_x, "rot_x: %.2f", engine->rot_x);
+	sprintf(s_y, "rot_y: %.2f", engine->rot_y);
+	sprintf(s_z, "rot_z: %.2f", engine->rot_z);
+	mlx_string_put(engine->mlx, engine->win, 5, 10, 0xffffffff, s_x);
+	mlx_string_put(engine->mlx, engine->win, 5, 25, 0xffffffff, s_y);
+	mlx_string_put(engine->mlx, engine->win, 5, 40, 0xffffffff, s_z);
+	// printf("%llu\n", engine->t);
+	if (timeInMilliseconds() - engine->t < 24)
 	{
-		draw(square[i].x, square[i].y, 0xffffffff);
+		return (0);
 	}
-	return (true);
+	mlx_clear_window(engine->mlx, engine->win);
+	while (node)
+	{
+		i = 0;
+		color = node->color > 0 ? node->color : 0xffffff;
+		// printf("color: %d\n", color);
+		draw(node->coords.x, node->coords.y, node->coords.z, color);
+		while (DRAW_NEIGHBORS && node->neighbors && node->neighbors[i])
+			gs_line(node->coords, node->neighbors[i++]->coords);
+		node = node->next;
+	}
+	engine->t = timeInMilliseconds();
+	return (0);
 }
 
 int	main(void)
 {
 	t_engine	*engine;
-	t_ipoint	square[4];
+	t_grid_node	*head;
+	t_grid_node	*current;
 
 	engine = engine_instance();
 	if (!engine)
 		return (1);
 	if (!engine_init())
 		return (1);
-	square[0] = (t_ipoint){engine->config.width / 2 - 20, engine->config.height
-		/ 2 - 20, 0};
-	square[1] = (t_ipoint){engine->config.width / 2 + 20, engine->config.height
-		/ 2 - 20, 0};
-	square[2] = (t_ipoint){engine->config.width / 2 + 20, engine->config.height
-		/ 2 + 20, 0};
-	square[3] = (t_ipoint){engine->config.width / 2 - 20, engine->config.height
-		/ 2 + 20, 0};
-	for (size_t i = 0; i < 4; i++)
+	engine->t = timeInMilliseconds();
+	head = map_nodes();
+	if (!head)
+		return (1);
+	current = head;
+	while (current)
 	{
-		rot_x(&square[i].x, &square[i].z, -0.615472907);
-		rot_y(&square[i].x, &square[i].z, -0.523599);
-		rot_z(&square[i].x, &square[i].y, 0.615472907);
-		square[i].x += WIDTH / 2;
-		square[i].y -= HEIGHT / 8;
+		current->coords.x *= 20;
+		current->coords.y *= 20;
+		current->coords.z *= 3;
+		current = current->next;
 	}
-	
-	draw_square(square);
-	// gs_line(square[0], square[1]);
-	gs_line(square[1], square[2]);
-	// gs_line(square[2], square[3]);
-	// gs_line(square[3], square[0]);
+	engine->rot_x = 70;
+	engine->rot_y = 32;
+	engine->rot_z = 16.5;
+	mlx_loop_hook(engine->mlx, &draw_loop, head);
+	mlx_key_hook(engine->win, &key_press, 0);
 	mlx_loop(engine->mlx);
 	return (0);
 }
