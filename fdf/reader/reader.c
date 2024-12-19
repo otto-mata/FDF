@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 04:00:30 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/18 12:50:05 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/19 05:19:47 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,8 @@ t_grid_node	*find_node_by_coords(t_grid_node *head, double x, double y)
 {
 	while (head)
 	{
-		if (head->coords.x == x && head->coords.y == y)
+		if (floor(head->coords.x) == floor(x)
+			&& floor(head->coords.y) == floor(y))
 			return (head);
 		head = head->next;
 	}
@@ -137,6 +138,7 @@ t_grid_node	**set_neighbors(t_grid_node *node, t_map_dim dim, t_grid_node *head)
 				node->coords.y + 1);
 	neighbors[neighbors_count] = 0;
 	node->neighbors = neighbors;
+	node->n_neighbors = neighbors_count;
 	return (neighbors);
 }
 
@@ -187,14 +189,16 @@ t_grid_node	*extract_map_data(char *content)
 	free_char2d(lines);
 	return (head);
 }
+
 #include <stdio.h>
+
 t_grid_node	*map_nodes(void)
 {
 	char		*content;
 	t_grid_node	*head;
 	t_grid_node	*current;
 
-	content = get_file_content("maps/elem.fdf");
+	content = get_file_content("maps/42.fdf");
 	if (!content)
 		return (0);
 	head = extract_map_data(content);

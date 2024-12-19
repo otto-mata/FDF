@@ -6,13 +6,14 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 04:00:16 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/18 10:28:59 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/18 23:38:58 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef READER_H
 # define READER_H
 # include <fcntl.h>
+# include <math.h>
 # include <stdbool.h>
 # include <stdlib.h>
 # include <string.h>
@@ -46,10 +47,13 @@ struct						s_grid_node
 	t_point					coords;
 	t_grid_node				**neighbors;
 	t_grid_node				*next;
+	int						n_neighbors;
 };
 
 size_t						_strlen(char const *s);
 char						**split(char const *s, char c);
 void						*free_char2d(char **arr2d);
 t_grid_node					*map_nodes(void);
+t_grid_node					*find_node_by_coords(t_grid_node *head, double x,
+								double y);
 #endif
