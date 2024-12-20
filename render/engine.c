@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 23:13:59 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/18 12:20:04 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/20 11:28:08 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ t_engine	*engine_instance(void)
 			return (0);
 		engine->mlx = 0;
 		engine->win = 0;
+		engine->zoom = 10;
 		engine->config.height = HEIGHT;
 		engine->config.width = WIDTH;
 		engine->config.title = TITLE;
@@ -40,6 +41,7 @@ t_engine	*engine_instance(void)
 bool	engine_init(void)
 {
 	t_engine	*engine;
+	t_image		*img;
 
 	engine = engine_instance();
 	if (!engine)
@@ -51,6 +53,14 @@ bool	engine_init(void)
 			engine->config.height, engine->config.title);
 	if (!engine->win)
 		return (mlx_destroy_display(engine->mlx), free(engine), false);
+	img = malloc(sizeof(t_image));
+	img->content = mlx_new_image(engine->mlx, engine->config.width,
+			engine->config.height);
+	if (!img->content)
+		return (engine_exit());
+	img->addr = mlx_get_data_addr(img->content, &img->bits_per_pixel,
+			&img->line_length, &img->endian);
+	engine->img = img;
 	mlx_hook(engine->win, DestroyNotify, ButtonPressMask, &hook_close, 0);
 	return (true);
 }
@@ -64,7 +74,9 @@ bool	engine_exit(void)
 		return (false);
 	mlx_destroy_window(engine->mlx, engine->win);
 	mlx_destroy_display(engine->mlx);
+	mlx_destroy_image(engine->mlx, engine->img->addr);
 	free(engine->mlx);
+	free(engine->img);
 	free(engine);
 	return (true);
 }

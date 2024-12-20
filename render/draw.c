@@ -6,67 +6,90 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 00:51:01 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/19 05:20:34 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/20 11:42:46 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
 
-/* static void	dswap(double *a, double *b)
+int	c_lerp(int color1, int color2, double t)
 {
-	double	tmp;
+	int	r;
+	int	g;
+	int	b;
 
-	tmp = *a;
-	*a = *b;
-	*b = tmp;
-} */
+	r = (int)(((color1 >> 16) & 0xFF) + t * (((color2 >> 16) & 0xFF)
+				- ((color1 >> 16) & 0xFF)));
+	g = (int)(((color1 >> 8) & 0xFF) + t * (((color2 >> 8) & 0xFF)
+				- ((color1 >> 8) & 0xFF)));
+	b = (int)((color1 & 0xFF) + t * ((color2 & 0xFF) - (color1 & 0xFF)));
+	return ((r << 16) | (g << 8) | b);
+}
 
-bool	draw(double x, double y, double z, int color)
+bool	node_in_screen(t_grid_node n)
 {
 	t_engine	*engine;
 
 	engine = engine_instance();
 	if (!engine)
 		return (false);
-	rot_x(&y, &z, engine->rot_x);
-	rot_y(&x, &z, engine->rot_y);
-	rot_z(&x, &y, engine->rot_z);
-	x += WIDTH / 2;
-	y += HEIGHT / 2;
-	// printf("Drawing (%.0f, %.0f, %.0f)\n",x, y, z);
-	return (mlx_pixel_put(engine->mlx, engine->win, x, y, color));
+	return (n.coords.x >= 0 && n.coords.x <= engine->config.width
+		&& n.coords.y >= 0 && n.coords.y <= engine->config.height);
 }
 
-bool	gs_line(t_point p1, t_point p2)
+bool	draw(t_grid_node p)
 {
-	double	dx;
-	double	dy;
-	double	dz;
-	double	steps;
-	double	x_inc;
-	double	y_inc;
-	double	z_inc;
-	double	x;
-	double	y;
-	double	z;
-	int		i;
+	t_engine	*engine;
+	int			offset;
 
-	dx = p2.x - p1.x;
-	dy = p2.y - p1.y;
-	dz = p2.z - p1.z;
-	steps = fmax(fabs(dx), fmax(fabs(dy), fabs(dz)));
-	x_inc = dx / steps;
-	y_inc = dy / steps;
-	z_inc = dz / steps;
-	x = p1.x;
-	y = p1.y;
-	z = p1.z;
+	engine = engine_instance();
+	if (!engine)
+		return (false);
+	p.coords.x -= p.map_dim->width * engine->zoom / 2;
+	p.coords.y -= p.map_dim->height * engine->zoom / 2;
+	rot_x(&p.coords.y, &p.coords.z, engine->rot_x);
+	rot_y(&p.coords.x, &p.coords.z, engine->rot_y);
+	rot_z(&p.coords.x, &p.coords.y, engine->rot_z);
+	p.coords.x += WIDTH / 2;
+	p.coords.y += HEIGHT / 2;
+	offset = ((int)p.coords.y * engine->img->line_length) + ((int)p.coords.x
+			* (engine->img->bits_per_pixel / 8));
+	if (offset >= 0 && offset < (engine->img->line_length
+			* engine->config.height) && node_in_screen(p))
+		*(int *)(engine->img->addr + offset) = p.color;
+	return (true);
+}
+
+bool	gs_line(t_grid_node *p1, t_grid_node *p2)
+{
+	t_point		delta;
+	double		steps;
+	t_point		step;
+	t_grid_node	target;
+	int			i;
+	t_engine	*engine;
+
+	engine = engine_instance();
+	if (!engine)
+		return (false);
+	delta.x = p2->coords.x * engine->zoom - p1->coords.x * engine->zoom;
+	delta.y = p2->coords.y * engine->zoom - p1->coords.y * engine->zoom;
+	delta.z = p2->coords.z - p1->coords.z;
+	steps = fmax(fabs(delta.x), fmax(fabs(delta.y), fabs(delta.z)));
+	step.x = delta.x / steps;
+	step.y = delta.y / steps;
+	step.z = delta.z / steps;
+	target.coords.x = p1->coords.x * engine->zoom;
+	target.coords.y = p1->coords.y * engine->zoom;
+	target.coords.z = p1->coords.z;
+	target.map_dim = p1->map_dim;
 	for (i = 0; i <= steps; i++)
 	{
-		draw(x, y, z, 0xffffffff);
-		x += x_inc;
-		y += y_inc;
-		z += z_inc;
+		target.color = c_lerp(p1->color, p2->color, (double)i / steps);
+		draw(target);
+		target.coords.x += step.x;
+		target.coords.y += step.y;
+		target.coords.z += step.z;
 	}
 	return (true);
 }

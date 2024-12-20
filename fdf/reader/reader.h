@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 04:00:16 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/18 23:38:58 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/20 10:57:35 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,14 @@ struct						s_grid_node
 	t_point					coords;
 	t_grid_node				**neighbors;
 	t_grid_node				*next;
+	t_map_dim				*map_dim;
 	int						n_neighbors;
 };
 
 size_t						_strlen(char const *s);
 char						**split(char const *s, char c);
 void						*free_char2d(char **arr2d);
-t_grid_node					*map_nodes(void);
+t_grid_node					*map_nodes(char const *fdf_file_path);
 t_grid_node					*find_node_by_coords(t_grid_node *head, double x,
 								double y);
 #endif

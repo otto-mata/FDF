@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 04:00:30 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/19 05:19:47 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/20 11:23:25 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,19 +58,21 @@ char	*get_file_content(char const *path)
 	return (content);
 }
 
-static t_map_dim	get_map_dimensions(char **lines)
+static t_map_dim	*get_map_dimensions(char **lines)
 {
 	char		**parts;
-	t_map_dim	dim;
+	t_map_dim	*dim;
 
-	dim = (t_map_dim){0, 0};
-	while (lines[dim.height])
-		dim.height++;
+	dim = calloc(1, sizeof(t_map_dim));
+	if (!dim)
+		return (0);
+	while (lines[dim->height])
+		dim->height++;
 	parts = split(lines[0], ' ');
 	if (!parts)
-		return ((t_map_dim){0, 0});
-	while (parts[dim.width])
-		dim.width++;
+		return (0);
+	while (parts[dim->width])
+		dim->width++;
 	free_char2d(parts);
 	return (dim);
 }
@@ -88,7 +90,7 @@ bool	populate_node(t_grid_node *node, char *raw)
 	if (strchr(raw, ','))
 		node->color = strtol(values[1] + 2, 0, 16);
 	else
-		node->color = 0x0;
+		node->color = 0xFFFFFF;
 	node->coords.z = atoi(values[0]);
 	free_char2d(values);
 	return (true);
@@ -106,7 +108,7 @@ t_grid_node	*find_node_by_coords(t_grid_node *head, double x, double y)
 	return (0);
 }
 
-t_grid_node	**set_neighbors(t_grid_node *node, t_map_dim dim, t_grid_node *head)
+t_grid_node	**set_neighbors(t_grid_node *node, t_grid_node *head)
 {
 	t_grid_node	**neighbors;
 	int			neighbors_count;
@@ -116,9 +118,9 @@ t_grid_node	**set_neighbors(t_grid_node *node, t_map_dim dim, t_grid_node *head)
 		neighbors_count++;
 	if (node->coords.y > 0)
 		neighbors_count++;
-	if (node->coords.x < dim.width - 1)
+	if (node->coords.x < node->map_dim->width - 1)
 		neighbors_count++;
-	if (node->coords.y < dim.height - 1)
+	if (node->coords.y < node->map_dim->height - 1)
 		neighbors_count++;
 	neighbors = malloc((neighbors_count + 1) * sizeof(t_grid_node *));
 	if (!neighbors)
@@ -130,10 +132,10 @@ t_grid_node	**set_neighbors(t_grid_node *node, t_map_dim dim, t_grid_node *head)
 	if (node->coords.y > 0)
 		neighbors[neighbors_count++] = find_node_by_coords(head, node->coords.x,
 				node->coords.y - 1);
-	if (node->coords.x < dim.width - 1)
+	if (node->coords.x < node->map_dim->width - 1)
 		neighbors[neighbors_count++] = find_node_by_coords(head, node->coords.x
 				+ 1, node->coords.y);
-	if (node->coords.y < dim.height - 1)
+	if (node->coords.y < node->map_dim->height - 1)
 		neighbors[neighbors_count++] = find_node_by_coords(head, node->coords.x,
 				node->coords.y + 1);
 	neighbors[neighbors_count] = 0;
@@ -148,7 +150,7 @@ t_grid_node	*extract_map_data(char *content)
 	char		**line_parts;
 	t_grid_node	*node;
 	t_grid_node	*head;
-	t_map_dim	dim;
+	t_map_dim	*dim;
 	int			i;
 	int			j;
 
@@ -156,6 +158,8 @@ t_grid_node	*extract_map_data(char *content)
 	if (!lines)
 		return (0);
 	dim = get_map_dimensions(lines);
+	if (!dim)
+		return (0);
 	head = malloc(sizeof(t_grid_node));
 	if (!head)
 		return (0);
@@ -183,34 +187,25 @@ t_grid_node	*extract_map_data(char *content)
 	node = head;
 	while (node)
 	{
-		node->neighbors = set_neighbors(node, dim, head);
+		node->map_dim = dim;
+		node->neighbors = set_neighbors(node, head);
 		node = node->next;
 	}
 	free_char2d(lines);
 	return (head);
 }
 
-#include <stdio.h>
-
-t_grid_node	*map_nodes(void)
+t_grid_node	*map_nodes(char const *path)
 {
 	char		*content;
 	t_grid_node	*head;
-	t_grid_node	*current;
 
-	content = get_file_content("maps/42.fdf");
+	content = get_file_content(path);
 	if (!content)
 		return (0);
 	head = extract_map_data(content);
 	if (!head)
 		return (0);
 	free(content);
-	current = head;
-	while (current)
-	{
-		printf("Node at x: %f, y: %f, z: %f, color: %x\n", current->coords.x,
-			current->coords.y, current->coords.z, current->color);
-		current = current->next;
-	}
 	return (head);
 }

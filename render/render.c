@@ -6,20 +6,15 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:45:15 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/19 05:22:05 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/20 11:50:44 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
 #include <sys/time.h>
 
-long long	timeInMilliseconds(void)
-{
-	struct timeval	tv;
-
-	gettimeofday(&tv, NULL);
-	return (((long long)tv.tv_sec) * 1000) + (tv.tv_usec / 1000);
-}
+static void	draw_nodes(t_grid_node *node) __attribute__((hot));
+int			draw_loop(t_grid_node *node) __attribute__((hot));
 
 int	key_press(int keycode)
 {
@@ -29,7 +24,6 @@ int	key_press(int keycode)
 	engine = engine_instance();
 	if (!engine)
 		return (1);
-	printf("key: %d\n", keycode);
 	if (keycode == 'e')
 		engine->rot_x += offset;
 	if (keycode == 'd')
@@ -43,81 +37,95 @@ int	key_press(int keycode)
 	if (keycode == 'g')
 		engine->rot_z -= offset;
 	if (keycode == 65451)
-		offset += 0.5;
+		engine->zoom += 0.5;
 	if (keycode == 65453)
-		offset -= 0.5;
+		engine->zoom -= 0.5;
 	return (0);
 }
 
-int	draw_loop(t_grid_node *node) // 70 32 12
+static void	draw_nodes(t_grid_node *node)
 {
-	int color;
-	int i;
-	t_grid_node *head;
-	t_engine *engine;
-	char s_x[64];
-	char s_y[64];
-	char s_z[64];
+	t_engine	*engine;
+	int			color;
+	int			i;
 
 	engine = engine_instance();
 	if (!engine)
-		return (1);
-	head = node;
-	sprintf(s_x, "rot_x: %.2f", engine->rot_x);
-	sprintf(s_y, "rot_y: %.2f", engine->rot_y);
-	sprintf(s_z, "rot_z: %.2f", engine->rot_z);
-	mlx_string_put(engine->mlx, engine->win, 5, 10, 0xffffffff, s_x);
-	mlx_string_put(engine->mlx, engine->win, 5, 25, 0xffffffff, s_y);
-	mlx_string_put(engine->mlx, engine->win, 5, 40, 0xffffffff, s_z);
-	if (timeInMilliseconds() - engine->t < 16)
-	{
-		return (0);
-	}
-	mlx_clear_window(engine->mlx, engine->win);
+		return ;
 	while (node)
 	{
 		i = 0;
 		color = node->color > 0 ? node->color : 0xffffff;
-		draw(node->coords.x, node->coords.y, node->coords.z, color);
 		while (node && node->neighbors && node->neighbors[i])
 		{
-			gs_line(node->coords, node->neighbors[i]->coords);
+			gs_line(node, node->neighbors[i]);
 			i++;
 		}
 		node = node->next;
 	}
-	// engine->rot_y += 0.5;
-	// exit(0);
-	engine->t = timeInMilliseconds();
+}
+void	clear_image(void)
+{
+	int			*image;
+	int			i;
+	t_engine	*engine;
+
+	engine = engine_instance();
+	if (!engine)
+		return ;
+	image = (int *)engine->img->addr;
+	i = 0;
+	while (i < (engine->img->line_length / 4) * engine->config.height)
+	{
+		image[i] = 0x000000;
+		i++;
+	}
+}
+
+int	draw_loop(t_grid_node *node)
+{
+	t_engine	*engine;
+
+	BENCHMARK_START();
+	engine = engine_instance();
+	if (!engine)
+		return (1);
+	clear_image();
+	draw_nodes(node);
+	mlx_put_image_to_window(engine->mlx, engine->win, engine->img->content, 0,
+		0);
+	// engine->rot_y += 0.05;
+	// engine->rot_x += 0.02;
+	// engine->rot_z -= 0.02;
+	BENCHMARK_END();
 	return (0);
 }
 
-int	main(void)
+int	main(int argc, char **argv)
 {
 	t_engine	*engine;
 	t_grid_node	*head;
 	t_grid_node	*current;
 
+	if (argc != 2)
+		return (1);
 	engine = engine_instance();
 	if (!engine)
 		return (1);
 	if (!engine_init())
 		return (1);
-	engine->t = timeInMilliseconds();
-	head = map_nodes();
+	head = map_nodes(argv[1]);
 	if (!head)
 		return (1);
 	current = head;
 	while (current)
 	{
-		current->coords.x *= 20;
-		current->coords.y *= 20;
-		current->coords.z *= -10;
+		current->coords.z *= -1;
 		current = current->next;
 	}
-	engine->rot_x = 70;
-	engine->rot_y = 32;
-	engine->rot_z = 12;
+	engine->rot_x = 75;
+	engine->rot_y = 0;
+	engine->rot_z = 0;
 	mlx_loop_hook(engine->mlx, &draw_loop, head);
 	mlx_key_hook(engine->win, &key_press, 0);
 	mlx_loop(engine->mlx);
