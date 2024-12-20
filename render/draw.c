@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 00:51:01 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/20 11:42:46 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/20 12:59:46 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,14 +74,14 @@ bool	gs_line(t_grid_node *p1, t_grid_node *p2)
 		return (false);
 	delta.x = p2->coords.x * engine->zoom - p1->coords.x * engine->zoom;
 	delta.y = p2->coords.y * engine->zoom - p1->coords.y * engine->zoom;
-	delta.z = p2->coords.z - p1->coords.z;
+	delta.z = p2->coords.z * engine->zoom - p1->coords.z * engine->zoom;
 	steps = fmax(fabs(delta.x), fmax(fabs(delta.y), fabs(delta.z)));
 	step.x = delta.x / steps;
 	step.y = delta.y / steps;
 	step.z = delta.z / steps;
 	target.coords.x = p1->coords.x * engine->zoom;
 	target.coords.y = p1->coords.y * engine->zoom;
-	target.coords.z = p1->coords.z;
+	target.coords.z = p1->coords.z * engine->zoom;
 	target.map_dim = p1->map_dim;
 	for (i = 0; i <= steps; i++)
 	{
@@ -92,4 +92,42 @@ bool	gs_line(t_grid_node *p1, t_grid_node *p2)
 		target.coords.z += step.z;
 	}
 	return (true);
+}
+
+void	crosshair(void)
+{
+	t_grid_node	origin;
+	int			i;
+	t_map_dim	dim;
+
+	origin.n_neighbors = 3;
+	origin.neighbors = malloc((origin.n_neighbors + 1) * sizeof(t_grid_node *));
+	if (!origin.neighbors)
+		return ;
+	origin.neighbors[0] = malloc(sizeof(t_grid_node));
+	origin.neighbors[1] = malloc(sizeof(t_grid_node));
+	origin.neighbors[2] = malloc(sizeof(t_grid_node));
+	if (!origin.neighbors[0] || !origin.neighbors[1] || !origin.neighbors[2])
+		return ;
+	dim.height = 2;
+	dim.width = 2;
+	origin.color = 0xffffff;
+	origin.coords = (t_point){0, 0 ,0};
+	origin.map_dim = &dim;
+	origin.neighbors[0]->map_dim = &dim;
+	origin.neighbors[1]->map_dim = &dim;
+	origin.neighbors[2]->map_dim = &dim;
+	origin.neighbors[0]->coords = (t_point){1, 0, 0};
+	origin.neighbors[1]->coords = (t_point){0, 1, 0};
+	origin.neighbors[2]->coords = (t_point){0, 0, -1};
+	origin.neighbors[0]->color = 0xff0000;
+	origin.neighbors[1]->color = 0x00ff00;
+	origin.neighbors[2]->color = 0x0000ff;
+	origin.neighbors[3] = 0;
+	i = 0;
+	while (origin.neighbors[i])
+	{
+		gs_line(&origin, origin.neighbors[i]);
+		i++;
+	}
 }

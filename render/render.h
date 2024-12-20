@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:53:23 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/20 11:27:56 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/20 12:56:05 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,4 +92,5 @@ bool						gs_line(t_grid_node *p1, t_grid_node *p2);
 void						rot_x(double *y, double *z, double x_angle);
 void						rot_y(double *x, double *z, double y_angle);
 void						rot_z(double *x, double *y, double z_angle);
+void						crosshair(void);
 #endif

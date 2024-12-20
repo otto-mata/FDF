@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:45:15 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/20 11:50:44 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/20 13:00:21 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ int	key_press(int keycode)
 		engine->zoom += 0.5;
 	if (keycode == 65453)
 		engine->zoom -= 0.5;
+	printf("rX: %.3f, rY: %.3f, rZ: %.3f\n", engine->rot_x, engine->rot_y,
+		engine->rot_z);
 	return (0);
 }
 
@@ -86,18 +88,19 @@ int	draw_loop(t_grid_node *node)
 {
 	t_engine	*engine;
 
-	BENCHMARK_START();
+	// BENCHMARK_START();
 	engine = engine_instance();
 	if (!engine)
 		return (1);
 	clear_image();
-	draw_nodes(node);
+	// draw_nodes(node);
+	crosshair();
 	mlx_put_image_to_window(engine->mlx, engine->win, engine->img->content, 0,
 		0);
 	// engine->rot_y += 0.05;
 	// engine->rot_x += 0.02;
 	// engine->rot_z -= 0.02;
-	BENCHMARK_END();
+	// BENCHMARK_END();
 	return (0);
 }
 
@@ -120,12 +123,12 @@ int	main(int argc, char **argv)
 	current = head;
 	while (current)
 	{
-		current->coords.z *= -1;
+		current->coords.z *= -0.1;
 		current = current->next;
 	}
-	engine->rot_x = 75;
-	engine->rot_y = 0;
-	engine->rot_z = 0;
+	engine->rot_x = 45;
+	engine->rot_y = 35.264;
+	engine->rot_z = 28.264;
 	mlx_loop_hook(engine->mlx, &draw_loop, head);
 	mlx_key_hook(engine->win, &key_press, 0);
 	mlx_loop(engine->mlx);
