@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 23:13:59 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/20 11:28:08 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/20 19:04:09 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ bool	engine_init(void)
 	img->addr = mlx_get_data_addr(img->content, &img->bits_per_pixel,
 			&img->line_length, &img->endian);
 	engine->img = img;
+	set_crosshair();
 	mlx_hook(engine->win, DestroyNotify, ButtonPressMask, &hook_close, 0);
 	return (true);
 }

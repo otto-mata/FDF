@@ -6,12 +6,13 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 04:00:16 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/20 10:57:35 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/20 18:41:23 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef READER_H
 # define READER_H
+# include "../../vec3/vec3.h"
 # include <fcntl.h>
 # include <math.h>
 # include <stdbool.h>
@@ -23,18 +24,6 @@
 typedef struct s_map_dim	t_map_dim;
 typedef struct s_grid_node	t_grid_node;
 
-# ifndef STRUCT_POINT
-#  define STRUCT_POINT
-
-typedef struct s_point		t_point;
-struct						s_point
-{
-	double					x;
-	double					y;
-	double					z;
-};
-# endif
-
 struct						s_map_dim
 {
 	int						width;
@@ -44,7 +33,7 @@ struct						s_map_dim
 struct						s_grid_node
 {
 	int						color;
-	t_point					coords;
+	t_vec3					coords;
 	t_grid_node				**neighbors;
 	t_grid_node				*next;
 	t_map_dim				*map_dim;

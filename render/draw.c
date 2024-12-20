@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 00:51:01 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/20 12:59:46 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/20 18:51:10 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,9 @@ bool	draw(t_grid_node p)
 
 bool	gs_line(t_grid_node *p1, t_grid_node *p2)
 {
-	t_point		delta;
+	t_vec3		delta;
 	double		steps;
-	t_point		step;
+	t_vec3		step;
 	t_grid_node	target;
 	int			i;
 	t_engine	*engine;
@@ -92,42 +92,4 @@ bool	gs_line(t_grid_node *p1, t_grid_node *p2)
 		target.coords.z += step.z;
 	}
 	return (true);
-}
-
-void	crosshair(void)
-{
-	t_grid_node	origin;
-	int			i;
-	t_map_dim	dim;
-
-	origin.n_neighbors = 3;
-	origin.neighbors = malloc((origin.n_neighbors + 1) * sizeof(t_grid_node *));
-	if (!origin.neighbors)
-		return ;
-	origin.neighbors[0] = malloc(sizeof(t_grid_node));
-	origin.neighbors[1] = malloc(sizeof(t_grid_node));
-	origin.neighbors[2] = malloc(sizeof(t_grid_node));
-	if (!origin.neighbors[0] || !origin.neighbors[1] || !origin.neighbors[2])
-		return ;
-	dim.height = 2;
-	dim.width = 2;
-	origin.color = 0xffffff;
-	origin.coords = (t_point){0, 0 ,0};
-	origin.map_dim = &dim;
-	origin.neighbors[0]->map_dim = &dim;
-	origin.neighbors[1]->map_dim = &dim;
-	origin.neighbors[2]->map_dim = &dim;
-	origin.neighbors[0]->coords = (t_point){1, 0, 0};
-	origin.neighbors[1]->coords = (t_point){0, 1, 0};
-	origin.neighbors[2]->coords = (t_point){0, 0, -1};
-	origin.neighbors[0]->color = 0xff0000;
-	origin.neighbors[1]->color = 0x00ff00;
-	origin.neighbors[2]->color = 0x0000ff;
-	origin.neighbors[3] = 0;
-	i = 0;
-	while (origin.neighbors[i])
-	{
-		gs_line(&origin, origin.neighbors[i]);
-		i++;
-	}
 }

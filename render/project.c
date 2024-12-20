@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 00:56:50 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/18 11:45:14 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/20 18:41:22 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	rot_y(double *x, double *z, double angle)
 
 void	rot_z(double *x, double *y, double angle)
 {
-	t_point prev;
+	t_vec3 prev;
 	double rad;
 
 	rad = (angle) * (PI / 180);

@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:53:23 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/20 12:56:05 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/20 18:59:12 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define RENDER_H
 # include "../fdf/reader/reader.h"
 # include "../mlx/mlx.h"
+# include "../vec3/vec3.h"
 # include "X11/X.h"
 # include <math.h>
 # include <stdbool.h>
@@ -42,7 +43,6 @@
 typedef struct s_engine		t_engine;
 typedef struct s_ngin_conf	t_ngin_conf;
 typedef struct s_image		t_image;
-
 struct						s_ngin_conf
 {
 	int						width;
@@ -60,6 +60,8 @@ struct						s_engine
 	double					zoom;
 	t_image					*img;
 	t_ngin_conf				config;
+	t_grid_node				*crosshair;
+	bool					to_update;
 };
 
 struct						s_image
@@ -71,18 +73,6 @@ struct						s_image
 	int						endian;
 };
 
-# ifndef STRUCT_POINT
-#  define STRUCT_POINT
-
-typedef struct s_point		t_point;
-struct						s_point
-{
-	double					x;
-	double					y;
-	double					z;
-};
-# endif
-
 bool						engine_init(void);
 t_engine					*engine_instance(void);
 bool						engine_exit(void);
@@ -92,5 +82,5 @@ bool						gs_line(t_grid_node *p1, t_grid_node *p2);
 void						rot_x(double *y, double *z, double x_angle);
 void						rot_y(double *x, double *z, double y_angle);
 void						rot_z(double *x, double *y, double z_angle);
-void						crosshair(void);
+void						set_crosshair(void);
 #endif
