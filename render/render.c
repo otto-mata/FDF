@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:45:15 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/21 16:44:06 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/21 22:20:55 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 static void	draw_nodes(t_grid_node *node) __attribute__((hot));
 int			draw_loop(t_grid_node *node) __attribute__((hot));
-void		view_angle_DBG(void) __attribute__((hot));
 
 int	key_press(int keycode)
 {
@@ -89,8 +88,6 @@ int	draw_loop(t_grid_node *node)
 	clear_image();
 	set_crosshair();
 	draw_nodes(node);
-	// draw_nodes(engine->origin);
-	// view_angle_DBG();
 	mlx_put_image_to_window(engine->mlx, engine->win, engine->img->content, 0,
 		0);
 	// engine->rot_y += 0.05;
@@ -119,7 +116,7 @@ int	main(int argc, char **argv)
 	current = head;
 	while (current)
 	{
-		current->coords.z *= -3;
+		current->coords.z *= -0.1;
 		current = current->next;
 	}
 	engine->rot_x = 45;

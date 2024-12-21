@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 00:51:01 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/21 17:09:06 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/21 22:14:15 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ bool	draw(t_grid_node p)
 	return (true);
 }
 
-static t_vec3	proj(t_grid_node *p)
+static t_vec3	proj(t_grid_node p)
 {
 	t_vec3		v;
 	t_engine	*engine;
@@ -61,12 +61,19 @@ static t_vec3	proj(t_grid_node *p)
 	engine = engine_instance();
 	if (!engine)
 		exit(EXIT_FAILURE);
-	v.x = engine->origin[0].x * p->coords.x + engine->origin[1].x * p->coords.y
-		+ engine->origin[2].x * p->coords.z;
-	v.y = engine->origin[0].y * p->coords.x + engine->origin[1].y * p->coords.y
-		+ engine->origin[2].y * p->coords.z;
-	v.z = engine->origin[0].z * p->coords.x + engine->origin[1].z * p->coords.y
-		+ engine->origin[2].z * p->coords.z;
+	p.coords.x *= engine->zoom;
+	p.coords.y *= engine->zoom;
+	p.coords.z *= engine->zoom;
+	p.coords.x -= ((int)(p.map_dim->width * engine->zoom)) >> 1;
+	p.coords.y -= ((int)(p.map_dim->height * engine->zoom)) >> 1;
+	v.x = engine->origin[0].x * p.coords.x + engine->origin[1].x * p.coords.y
+		+ engine->origin[2].x * p.coords.z;
+	v.y = engine->origin[0].y * p.coords.x + engine->origin[1].y * p.coords.y
+		+ engine->origin[2].y * p.coords.z;
+	v.z = engine->origin[0].z * p.coords.x + engine->origin[1].z * p.coords.y
+		+ engine->origin[2].z * p.coords.z;
+	v.x += engine->config.width >> 1;
+	v.y += engine->config.height >> 1;
 	return (v);
 }
 
@@ -82,16 +89,16 @@ bool	gs_line(t_grid_node *p1, t_grid_node *p2)
 	engine = engine_instance();
 	if (!engine)
 		return (false);
-	delta.x = (proj(p2).x - proj(p1).x) * engine->zoom;
-	delta.y = (proj(p2).y - proj(p1).y) * engine->zoom;
-	delta.z = (proj(p2).z - proj(p1).z) * engine->zoom;
+	delta.x = (proj(*p2).x - proj(*p1).x);
+	delta.y = (proj(*p2).y - proj(*p1).y);
+	delta.z = (proj(*p2).z - proj(*p1).z);
 	steps = fmax(fabs(delta.x), fmax(fabs(delta.y), fabs(delta.z)));
 	step.x = delta.x / steps;
 	step.y = delta.y / steps;
 	step.z = delta.z / steps;
-	target.coords.x = proj(p1).x * engine->zoom;
-	target.coords.y = proj(p1).y * engine->zoom;
-	target.coords.z = proj(p1).z * engine->zoom;
+	target.coords.x = proj(*p1).x;
+	target.coords.y = proj(*p1).y;
+	target.coords.z = proj(*p1).z;
 	target.map_dim = p1->map_dim;
 	// target.coords.x -= ((int)(target.map_dim->width * engine->zoom)) >> 1;
 	// target.coords.y -= ((int)(target.map_dim->height * engine->zoom)) >> 1;
@@ -101,8 +108,6 @@ bool	gs_line(t_grid_node *p1, t_grid_node *p2)
 	// target.coords.y = engine->origin[0].y * target.coords.x
 	// 	+ engine->origin[1].y * target.coords.y + engine->origin[2].y
 	// 	* target.coords.z;
-	target.coords.x += WIDTH >> 1;
-	target.coords.y += HEIGHT >> 1;
 	for (i = 0; i <= steps; i++)
 	{
 		target.color = c_lerp(p1->color, p2->color, (double)i / steps);
