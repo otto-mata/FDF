@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 01:30:51 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/20 18:38:35 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/21 16:20:01 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ struct					s_vec3
 
 t_vec3					*vec3_new(double x, double y, double z);
 void					vec3_ip_add(t_vec3 *to, t_vec3 *v);
-void					vec3_ip_mult(t_vec3 *v, double t);
+void					vec3_ip_mult_scalar(t_vec3 *v, double t);
+void					vec3_ip_mult(t_vec3 *u, t_vec3 *v);
 void					vec3_ip_div(t_vec3 *v, double t);
 void					vec3_ip_sub(t_vec3 *to, t_vec3 *v);
 double					vec3_sqrd_len(t_vec3 *v);

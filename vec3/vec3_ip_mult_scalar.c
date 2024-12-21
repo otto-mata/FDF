@@ -5,16 +5,16 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/01 01:45:54 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/21 16:19:43 by tblochet         ###   ########.fr       */
+/*   Created: 2024/12/01 01:36:06 by tblochet          #+#    #+#             */
+/*   Updated: 2024/12/21 16:18:50 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vec3.h"
 
-void	vec3_ip_mult(t_vec3 *u, t_vec3 *v)
+void	vec3_ip_mult_scalar(t_vec3 *v, double t)
 {
-	u->x *= v->x;
-	u->y *= v->y;
-	u->z *= v->z;
+	v->x *= t;
+	v->y *= t;
+	v->z *= t;
 }

@@ -6,11 +6,29 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 18:51:19 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/20 19:10:37 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/21 17:02:42 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
+
+t_vec3	apply_projection(t_grid_node *p)
+{
+	t_vec3		v;
+	t_engine	*engine;
+
+	engine = engine_instance();
+	if (!engine)
+		exit(EXIT_FAILURE);
+	v.x = p->coords.x;
+	v.y = p->coords.y;
+	v.z = p->coords.z;
+	rot_x(&v.y, &v.z, engine->rot_x);
+	rot_y(&v.x, &v.z, engine->rot_y);
+	rot_z(&v.x, &v.y, engine->rot_z);
+	v.z = 0;
+	return (v);
+}
 
 void	set_crosshair(void)
 {
@@ -20,19 +38,9 @@ void	set_crosshair(void)
 
 	engine = engine_instance();
 	if (!engine)
-		return ;
+		exit(EXIT_FAILURE);
 	origin = malloc(sizeof(t_grid_node));
 	if (!origin)
-		return ;
-	origin->n_neighbors = 3;
-	origin->neighbors = malloc((origin->n_neighbors + 1)
-			* sizeof(t_grid_node *));
-	if (!origin->neighbors)
-		return ;
-	origin->neighbors[0] = malloc(sizeof(t_grid_node));
-	origin->neighbors[1] = malloc(sizeof(t_grid_node));
-	origin->neighbors[2] = malloc(sizeof(t_grid_node));
-	if (!origin->neighbors[0] || !origin->neighbors[1] || !origin->neighbors[2])
 		return ;
 	dim = malloc(sizeof(t_map_dim));
 	if (!dim)
@@ -40,18 +48,12 @@ void	set_crosshair(void)
 	dim->height = 2;
 	dim->width = 2;
 	origin->color = 0xffffff;
-	origin->coords = (t_vec3){0, 0, 0};
 	origin->map_dim = dim;
-	origin->neighbors[0]->map_dim = dim;
-	origin->neighbors[1]->map_dim = dim;
-	origin->neighbors[2]->map_dim = dim;
-	origin->neighbors[0]->coords = (t_vec3){5, 0, 0};
-	origin->neighbors[1]->coords = (t_vec3){0, 5, 0};
-	origin->neighbors[2]->coords = (t_vec3){0, 0, -5};
-	origin->neighbors[0]->color = 0xff0000;
-	origin->neighbors[1]->color = 0x00ff00;
-	origin->neighbors[2]->color = 0x0000ff;
-	origin->neighbors[3] = 0;
-	engine->crosshair = origin;
-	origin->next = 0;
+	origin->coords = (t_vec3){1, 0, 0};
+	engine->origin[0] = apply_projection(origin);
+	origin->coords = (t_vec3){0, 1, 0};
+	engine->origin[1] = apply_projection(origin);
+	origin->coords = (t_vec3){0, 0, 1};
+	engine->origin[2] = apply_projection(origin);
+	return (free(dim), free(origin));
 }

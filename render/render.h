@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:53:23 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/20 18:59:12 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/21 16:57:49 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@
 #  define TITLE "MLX Rendering"
 # endif
 # define PI 3.141592653589793238462643383279502884197169399375105820974944592307
+# define RAD_DEG_RATIO 57.29577951308232
+# define DEG_RAD_RATIO 0.017453292519943295
 
 # include <time.h>
 
@@ -60,7 +62,7 @@ struct						s_engine
 	double					zoom;
 	t_image					*img;
 	t_ngin_conf				config;
-	t_grid_node				*crosshair;
+	t_vec3					origin[3];
 	bool					to_update;
 };
 
@@ -83,4 +85,5 @@ void						rot_x(double *y, double *z, double x_angle);
 void						rot_y(double *x, double *z, double y_angle);
 void						rot_z(double *x, double *y, double z_angle);
 void						set_crosshair(void);
+t_vec3						apply_projection(t_grid_node *p);
 #endif

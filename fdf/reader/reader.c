@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 04:00:30 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/20 11:23:25 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/21 16:02:40 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,10 +114,10 @@ t_grid_node	**set_neighbors(t_grid_node *node, t_grid_node *head)
 	int			neighbors_count;
 
 	neighbors_count = 0;
-	if (node->coords.x > 0)
-		neighbors_count++;
-	if (node->coords.y > 0)
-		neighbors_count++;
+	// if (node->coords.x > 0)
+	// 	neighbors_count++;
+	// if (node->coords.y > 0)
+	// 	neighbors_count++;
 	if (node->coords.x < node->map_dim->width - 1)
 		neighbors_count++;
 	if (node->coords.y < node->map_dim->height - 1)
@@ -126,12 +126,12 @@ t_grid_node	**set_neighbors(t_grid_node *node, t_grid_node *head)
 	if (!neighbors)
 		return (0);
 	neighbors_count = 0;
-	if (node->coords.x > 0)
-		neighbors[neighbors_count++] = find_node_by_coords(head, node->coords.x
-				- 1, node->coords.y);
-	if (node->coords.y > 0)
-		neighbors[neighbors_count++] = find_node_by_coords(head, node->coords.x,
-				node->coords.y - 1);
+	// if (node->coords.x > 0)
+	// 	neighbors[neighbors_count++] = find_node_by_coords(head, node->coords.x
+	// 			- 1, node->coords.y);
+	// if (node->coords.y > 0)
+	// 	neighbors[neighbors_count++] = find_node_by_coords(head, node->coords.x,
+	// 			node->coords.y - 1);
 	if (node->coords.x < node->map_dim->width - 1)
 		neighbors[neighbors_count++] = find_node_by_coords(head, node->coords.x
 				+ 1, node->coords.y);
