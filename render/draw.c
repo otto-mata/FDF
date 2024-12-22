@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 00:51:01 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/21 22:14:15 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/22 04:29:37 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,10 @@ bool	draw(t_grid_node p)
 	if (!engine)
 		exit(EXIT_FAILURE);
 	offset = ((int)p.coords.y * engine->img->line_length) + ((int)p.coords.x
-			* (engine->img->bits_per_pixel >> 3));
+			* (engine->img->bpp >> 3));
 	if (offset >= 0 && offset < (engine->img->line_length
 			* engine->config.height) && node_in_screen(p))
-		*(int *)(engine->img->addr + offset) = p.color;
+		*(int *)(engine->img->data + offset) = p.color;
 	return (true);
 }
 
@@ -72,8 +72,8 @@ static t_vec3	proj(t_grid_node p)
 		+ engine->origin[2].y * p.coords.z;
 	v.z = engine->origin[0].z * p.coords.x + engine->origin[1].z * p.coords.y
 		+ engine->origin[2].z * p.coords.z;
-	v.x += engine->config.width >> 1;
-	v.y += engine->config.height >> 1;
+	v.x += (engine->config.width >> 1) + engine->offset_x;
+	v.y += (engine->config.height >> 1) + engine->offset_y;
 	return (v);
 }
 
@@ -100,14 +100,6 @@ bool	gs_line(t_grid_node *p1, t_grid_node *p2)
 	target.coords.y = proj(*p1).y;
 	target.coords.z = proj(*p1).z;
 	target.map_dim = p1->map_dim;
-	// target.coords.x -= ((int)(target.map_dim->width * engine->zoom)) >> 1;
-	// target.coords.y -= ((int)(target.map_dim->height * engine->zoom)) >> 1;
-	// target.coords.x = engine->origin[0].x * target.coords.x
-	// 	+ engine->origin[1].x * target.coords.y + engine->origin[2].x
-	// 	* target.coords.z;
-	// target.coords.y = engine->origin[0].y * target.coords.x
-	// 	+ engine->origin[1].y * target.coords.y + engine->origin[2].y
-	// 	* target.coords.z;
 	for (i = 0; i <= steps; i++)
 	{
 		target.color = c_lerp(p1->color, p2->color, (double)i / steps);

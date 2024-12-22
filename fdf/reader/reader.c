@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 04:00:30 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/21 16:02:40 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/22 03:38:31 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,6 +167,7 @@ t_grid_node	*extract_map_data(char *content)
 	node = head;
 	while (lines[++i])
 	{
+		printf("\rLine %d/%d done.", i + 1, dim->height);
 		line_parts = split(lines[i], ' ');
 		if (!line_parts)
 			return (free_char2d(lines));
@@ -176,21 +177,26 @@ t_grid_node	*extract_map_data(char *content)
 			populate_node(node, line_parts[j]);
 			node->coords.x = j;
 			node->coords.y = i;
-			node->next = malloc(sizeof(t_grid_node));
+			node->next = calloc(1, sizeof(t_grid_node));
 			if (!node->next)
 				return (free_char2d(line_parts), free_char2d(lines));
 			node = node->next;
 		}
 		free_char2d(line_parts);
 	}
+	printf("\nDone\n");
 	node->next = 0;
 	node = head;
+	int n = 0;
 	while (node)
 	{
+		printf("\rSetting node neighbors %d/%d", n, i * j);
 		node->map_dim = dim;
 		node->neighbors = set_neighbors(node, head);
 		node = node->next;
+		n++;
 	}
+	printf("\nDone setting neighbors\n");
 	free_char2d(lines);
 	return (head);
 }
