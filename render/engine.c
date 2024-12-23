@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 23:13:59 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/22 02:31:57 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/23 18:45:42 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 int	hook_close(t_grid_node *nodes)
 {
 	t_grid_node	*next;
-	printf("exiting\n");
+
+	ft_printf("\n");
 	while (nodes)
 	{
 		next = nodes->next;
@@ -25,9 +26,8 @@ int	hook_close(t_grid_node *nodes)
 		free(nodes);
 		nodes = next;
 	}
-	if (engine_exit())
-		exit(0);
-	exit(1);
+	engine_exit();
+	return (0);
 }
 
 t_engine	*engine_instance(void)
@@ -41,7 +41,12 @@ t_engine	*engine_instance(void)
 			return (0);
 		engine->mlx = 0;
 		engine->win = 0;
-		engine->zoom = 10;
+		engine->zoom = 2;
+		engine->rot_x = 45;
+		engine->rot_y = 35.264;
+		engine->rot_z = 28.264;
+		engine->mouse_x = 0;
+		engine->mouse_y = 0;
 		engine->config.height = HEIGHT;
 		engine->config.width = WIDTH;
 		engine->config.title = TITLE;
@@ -49,7 +54,7 @@ t_engine	*engine_instance(void)
 	return (engine);
 }
 
-bool	engine_init(t_grid_node *nodes)
+bool	engine_init(t_grid_node *nodes, char *fname)
 {
 	t_engine	*engine;
 	t_image		*img;
@@ -57,6 +62,7 @@ bool	engine_init(t_grid_node *nodes)
 	engine = engine_instance();
 	if (!engine)
 		return (false);
+	engine->fname = fname;
 	engine->mlx = mlx_init();
 	if (!engine->mlx)
 		return (free(engine), false);
@@ -68,27 +74,27 @@ bool	engine_init(t_grid_node *nodes)
 	img->image = mlx_new_image(engine->mlx, engine->config.width,
 			engine->config.height);
 	if (!img->image)
-		return (engine_exit());
-	img->data = mlx_get_data_addr(img->image, &img->bpp,
-			&img->line_length, &img->image->byte_order);
+		engine_exit();
+	img->data = mlx_get_data_addr(img->image, &img->bpp, &img->line_length,
+			&img->image->byte_order);
 	engine->img = img;
 	set_crosshair();
 	mlx_hook(engine->win, DestroyNotify, ButtonPressMask, &hook_close, nodes);
 	return (true);
 }
 
-bool	engine_exit(void)
+void	engine_exit(void)
 {
 	t_engine	*engine;
 
 	engine = engine_instance();
 	if (!engine)
-		return (false);
+		exit(EXIT_FAILURE);
+	mlx_destroy_image(engine->mlx, engine->img->image);
 	mlx_destroy_window(engine->mlx, engine->win);
 	mlx_destroy_display(engine->mlx);
-	XFree((char *)engine->img->image);
 	free(engine->mlx);
 	free(engine->img);
 	free(engine);
-	return (true);
+	exit(EXIT_FAILURE);
 }

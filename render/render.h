@@ -6,13 +6,14 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:53:23 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/22 05:21:30 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/23 18:39:49 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef RENDER_H
 # define RENDER_H
 # include "../fdf/reader/reader.h"
+# include "../ft_printf/ft_printf.h"
 # include "../mlx/mlx.h"
 # include "../vec3/vec3.h"
 # include <X11/X.h>
@@ -62,7 +63,7 @@ struct							s_ngin_conf
 struct							s_engine
 {
 	t_mlx						*mlx;
-	void						*win;
+	t_mlx_win_list				*win;
 	double						rot_x;
 	double						rot_y;
 	double						rot_z;
@@ -76,6 +77,7 @@ struct							s_engine
 	int							offset_y;
 	int							set_by;
 	double						frametime;
+	char						*fname;
 };
 
 struct							s_image
@@ -90,6 +92,7 @@ struct							s_image
 	int							type;
 	int							format;
 	char						*data;
+	XShmSegmentInfo				shm;
 };
 
 struct							s_mlx_event_list
@@ -134,9 +137,9 @@ struct							s_mlx
 	int							end_loop;
 };
 
-bool							engine_init(t_grid_node *nodes);
+bool							engine_init(t_grid_node *nodes, char *fname);
 t_engine						*engine_instance(void);
-bool							engine_exit(void);
+void							engine_exit(void) __attribute__((noreturn));
 
 bool							draw(t_grid_node p) __attribute__((hot));
 bool							gs_line(t_grid_node *p1, t_grid_node *p2);
