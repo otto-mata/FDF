@@ -6,14 +6,14 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:53:23 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/23 18:39:49 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/27 01:07:25 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef RENDER_H
 # define RENDER_H
-# include "../fdf/reader/reader.h"
-# include "../ft_printf/ft_printf.h"
+# include "../fdf/readerv2/readerv2.h"
+# include "../libft/libft.h"
 # include "../mlx/mlx.h"
 # include "../vec3/vec3.h"
 # include <X11/X.h>

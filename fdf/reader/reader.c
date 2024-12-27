@@ -6,46 +6,12 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 04:00:30 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/23 19:10:29 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/26 23:28:46 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "reader.h"
 
-static t_index_table	*get_index_table(void)
-{
-	static t_index_table	*table = 0;
-
-	if (!table)
-	{
-		table = calloc(1, sizeof(t_index_table));
-		if (!table)
-			exit(EXIT_FAILURE);
-	}
-	return (table);
-}
-
-static void	init_index_table(t_map_dim *dimensions)
-{
-	t_index_table *const	table = get_index_table();
-	int						i;
-
-	table->height = dimensions->height;
-	table->width = dimensions->width;
-	table->nodes = calloc((table->height + 1), sizeof(t_grid_node ***));
-	i = 0;
-	while (i < table->height)
-		table->nodes[i++] = calloc(table->width + 1, sizeof(t_grid_node **));
-	if (!table->nodes)
-		exit(EXIT_FAILURE);
-}
-
-static void	index_node(t_grid_node *node, int x, int y)
-{
-	t_index_table *const	table = get_index_table();
-
-	table->nodes[y][x] = node;
-}
 
 static ssize_t	get_file_size(char const *path)
 {
@@ -93,24 +59,7 @@ char	*get_file_content(char const *path)
 	return (content);
 }
 
-static t_map_dim	*get_map_dimensions(char **lines)
-{
-	char		**parts;
-	t_map_dim	*dim;
 
-	dim = calloc(1, sizeof(t_map_dim));
-	if (!dim)
-		return (0);
-	while (lines[dim->height])
-		dim->height++;
-	parts = split(lines[0], ' ');
-	if (!parts)
-		return (0);
-	while (parts[dim->width])
-		dim->width++;
-	free_char2d(parts);
-	return (dim);
-}
 
 bool	populate_node(t_grid_node *node, char *raw)
 {
@@ -143,17 +92,11 @@ bool	populate_node(t_grid_node *node, char *raw)
 	return (true);
 }
 
-t_grid_node	*find_node_by_coords(int x, int y)
-{
-	t_index_table *const	table = get_index_table();
-
-	return (table->nodes[y][x]);
-}
-
 t_grid_node	**set_neighbors(t_grid_node *node)
 {
-	t_grid_node	**neighbors;
-	int			neighbors_count;
+	t_grid_node				**neighbors;
+	t_index_table *const	table = get_index_table();
+	int						neighbors_count;
 
 	neighbors_count = 0;
 	if (node->coords.x < node->map_dim->width - 1)
@@ -165,11 +108,11 @@ t_grid_node	**set_neighbors(t_grid_node *node)
 		return (0);
 	neighbors_count = 0;
 	if (node->coords.x < node->map_dim->width - 1)
-		neighbors[neighbors_count++] = find_node_by_coords(
-				(int)floor(node->coords.x + 1), (int)floor(node->coords.y));
+		neighbors[neighbors_count++]
+			= table->nodes[(int)node->coords.y][(int)node->coords.x + 1];
 	if (node->coords.y < node->map_dim->height - 1)
-		neighbors[neighbors_count++] = find_node_by_coords(
-				(int)floor(node->coords.x), (int)floor(node->coords.y + 1));
+		neighbors[neighbors_count++]
+			= table->nodes[(int)node->coords.y + 1][(int)node->coords.x];
 	neighbors[neighbors_count] = 0;
 	node->neighbors = neighbors;
 	node->n_neighbors = neighbors_count;
@@ -238,10 +181,10 @@ t_grid_node	*extract_map_data(char *content)
 
 t_grid_node	*map_nodes(char const *path)
 {
-	char				*content;
-	t_grid_node			*head;
-	int					i;
-	t_index_table		*table;
+	char			*content;
+	t_grid_node		*head;
+	int				i;
+	t_index_table	*table;
 
 	content = get_file_content(path);
 	if (!content)

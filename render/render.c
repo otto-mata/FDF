@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:45:15 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/23 19:35:15 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/27 01:07:45 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	send_destroy_notify(Display *dpy, Window target)
 {
 	XEvent	event;
 
-	memset(&event, 0, sizeof(event));
+	ft_memset(&event, 0, sizeof(event));
 	event.xdestroywindow.type = DestroyNotify;
 	event.xdestroywindow.serial = 0;
 	event.xdestroywindow.send_event = True;
@@ -208,8 +208,7 @@ int	usage(char *exec_name)
 int	main(int argc, char **argv)
 {
 	t_engine	*engine;
-	t_grid_node	*head;
-	t_grid_node	*current;
+	t_map_data	*map;
 
 	if (argc != 2)
 		if (argc != 4)
@@ -217,16 +216,15 @@ int	main(int argc, char **argv)
 	engine = engine_instance();
 	if (!engine)
 		return (1);
-	head = map_nodes(argv[1]);
-	if (!head)
+	map = load_map(argv[1]);
+	if (!map)
 		return (1);
-	if (!engine_init(head, argv[1]))
+	if (!engine_init(map->nodes, argv[1]))
 		return (1);
-	current = head;
-	while (current)
+	while (map->iter)
 	{
-		current->coords.z *= 1;
-		current = current->next;
+		map->iter->coords.z *= 1;
+		map->iter = map->iter->next;
 	}
 	engine->rot_x = 0;
 	engine->rot_y = 0;
@@ -234,7 +232,7 @@ int	main(int argc, char **argv)
 	mlx_hook(engine->win, ButtonPress, ButtonPressMask, &mouse_pressed, engine);
 	mlx_hook(engine->win, MotionNotify, Button1MotionMask | Button3MotionMask,
 		&transform_view, engine);
-	mlx_loop_hook(engine->mlx, &draw_loop, head);
+	mlx_loop_hook(engine->mlx, &draw_loop, map->nodes);
 	mlx_key_hook(engine->win, &key_press, engine);
 	mlx_loop(engine->mlx);
 	return (0);
