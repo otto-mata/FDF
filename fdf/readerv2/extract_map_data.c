@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/26 23:16:37 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/27 01:23:03 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/27 12:02:43 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,14 +45,11 @@ static int	iter_node(t_map_data *map, char **parts)
 {
 	if (!populate_node(map, parts[map->parser->x]))
 		exit(EXIT_FAILURE);
-	if (map->parser->x != map->dimensions->width - 1
-		&& map->parser->y != map->dimensions->height - 1)
-	{
-		map->iter->next = ft_calloc(1, sizeof(t_grid_node));
-		if (!map->iter->next)
-			return (0);
-		map->iter = map->iter->next;
-	}
+	map->iter->next = ft_calloc(1, sizeof(t_grid_node));
+	if (!map->iter->next)
+		return (0);
+	map->iter = map->iter->next;
+	map->iter->map_dim = map->dimensions;
 	return (1);
 }
 

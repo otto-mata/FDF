@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/26 20:50:25 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/26 23:08:23 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/27 12:28:57 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,13 @@ static bool	char_check(char c)
 
 static bool	check_valid_chars(char const *content)
 {
-	char	encounters[128];
+	int	encounters[128];
 	int		i;
 
 	ft_bzero(&encounters, 128);
 	i = -1;
 	while (content[++i])
-		encounters[content[i]]++;
+		encounters[(int)content[i]]++;
 	i = -1;
 	while (++i < 128)
 		if (encounters[i])
@@ -57,7 +57,7 @@ static bool	check_constant_width(char const *content)
 			return (free_2d((void **)lines), false);
 		if (!width)
 			width = arrlen((void **)l_iter);
-		else if (width != arrlen((void **)l_iter))
+		else if (width != (int)arrlen((void **)l_iter))
 			ok = false;
 		free_2d((void **)l_iter);
 	}

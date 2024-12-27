@@ -1,23 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   arrlen.c                                           :+:      :+:    :+:   */
+/*   ft_max.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/26 23:08:27 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/27 11:59:51 by tblochet         ###   ########.fr       */
+/*   Created: 2024/12/27 12:35:48 by tblochet          #+#    #+#             */
+/*   Updated: 2024/12/27 12:36:06 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "readerv2.h"
+#include "libft.h"
 
-size_t	arrlen(void **arr)
+int	ft_max(int a, int b)
 {
-	size_t	len;
-
-	len = 0;
-	while (arr[len++])
-		;
-	return (len);
+	return (a ^ ((a ^ b) & -(a < b)));
 }

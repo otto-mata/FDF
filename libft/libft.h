@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 11:01:51 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/27 01:06:30 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/27 12:36:30 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ struct						s_formatter
 	t_list					*flags;
 };
 
-struct s_list
+struct						s_list
 {
 	void					*content;
 	struct s_list			*next;
@@ -441,4 +441,6 @@ int							ft_strncmp(char const *s1, char const *s2,
 char						*ft_itoa(int n);
 char						*ft_itoa_unsigned(uint32_t n);
 char						*ft_ltoh(unsigned long n, bool upper);
+int							ft_max(int a, int b);
+int							ft_min(int a, int b);
 #endif

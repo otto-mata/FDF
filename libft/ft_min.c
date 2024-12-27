@@ -1,23 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   arrlen.c                                           :+:      :+:    :+:   */
+/*   ft_min.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/26 23:08:27 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/27 11:59:51 by tblochet         ###   ########.fr       */
+/*   Created: 2024/12/27 12:34:54 by tblochet          #+#    #+#             */
+/*   Updated: 2024/12/27 12:35:39 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "readerv2.h"
+#include "libft.h"
 
-size_t	arrlen(void **arr)
+int	ft_min(int a, int b)
 {
-	size_t	len;
-
-	len = 0;
-	while (arr[len++])
-		;
-	return (len);
+	return (b ^ ((a ^ b) & -(a < b)));
 }

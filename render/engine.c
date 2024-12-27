@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 23:13:59 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/23 18:45:42 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/27 12:26:02 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,5 +96,5 @@ void	engine_exit(void)
 	free(engine->mlx);
 	free(engine->img);
 	free(engine);
-	exit(EXIT_FAILURE);
+	exit(EXIT_SUCCESS);
 }

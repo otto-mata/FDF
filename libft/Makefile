@@ -50,7 +50,9 @@ SRCS=ft_strtohl.c \
 	ft_strtrim.c \
 	ft_substr.c \
 	ft_tolower.c \
-	ft_toupper.c
+	ft_toupper.c \
+	ft_min.c \
+	ft_max.c
 
 OBJS=$(SRCS:.c=.o)
 BOBJS=$(BSRCS:.c=.o)

@@ -6,7 +6,7 @@
 /*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:45:15 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/27 01:07:45 by tblochet         ###   ########.fr       */
+/*   Updated: 2024/12/27 12:28:03 by tblochet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,6 @@ int	key_press(int keycode, t_engine *engine)
 
 static void	draw_nodes(t_grid_node *node)
 {
-	int	color;
-
 	while (node)
 	{
 		if (node->n_neighbors >= 1)
@@ -223,7 +221,7 @@ int	main(int argc, char **argv)
 		return (1);
 	while (map->iter)
 	{
-		map->iter->coords.z *= 1;
+		map->iter->coords.z *= .2;
 		map->iter = map->iter->next;
 	}
 	engine->rot_x = 0;
