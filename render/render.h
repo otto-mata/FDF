@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   render.h                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/17 22:53:23 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/27 01:07:25 by tblochet         ###   ########.fr       */
+/*                                                                            */
+/*   render.h                                             ┌─┐┌┬┐┌┬┐┌─┐        */
+/*                                                        │ │ │  │ │ │        */
+/*   By: tblochet <tblochet@student.42.fr>                └─┘ ┴  ┴ └─┘        */
+/*                                                        ┌┬┐┌─┐┌┬┐┌─┐        */
+/*   Created: 2024/12/17 22:53:23 by tblochet             │││├─┤ │ ├─┤        */
+/*   Updated: 2025/01/03 02:30:08 by tblochet             ┴ ┴┴ ┴ ┴ ┴ ┴        */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,12 +137,12 @@ struct							s_mlx
 	int							end_loop;
 };
 
-bool							engine_init(t_grid_node *nodes, char *fname);
+int								engine_init(t_grid_node *nodes, char *fname);
 t_engine						*engine_instance(void);
 void							engine_exit(void) __attribute__((noreturn));
 
-bool							draw(t_grid_node p) __attribute__((hot));
-bool							gs_line(t_grid_node *p1, t_grid_node *p2);
+int								draw(t_grid_node p) __attribute__((hot));
+int								gs_line(t_grid_node *p1, t_grid_node *p2);
 void							rot_x(double *y, double *z, double x_angle);
 void							rot_y(double *x, double *z, double y_angle);
 void							rot_z(double *x, double *y, double z_angle);

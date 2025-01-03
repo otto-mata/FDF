@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   crosshair.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/20 18:51:19 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/23 17:22:50 by tblochet         ###   ########.fr       */
+/*                                                                            */
+/*   crosshair.c                                          ┌─┐┌┬┐┌┬┐┌─┐        */
+/*                                                        │ │ │  │ │ │        */
+/*   By: tblochet <tblochet@student.42.fr>                └─┘ ┴  ┴ └─┘        */
+/*                                                        ┌┬┐┌─┐┌┬┐┌─┐        */
+/*   Created: 2024/12/20 18:51:19 by tblochet             │││├─┤ │ ├─┤        */
+/*   Updated: 2025/01/03 02:32:43 by tblochet             ┴ ┴┴ ┴ ┴ ┴ ┴        */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,16 @@ t_vec3	apply_projection(t_grid_node *p)
 	return (v);
 }
 
+static t_vec3	vec3_stack_from(int x, int y, int z)
+{
+	t_vec3	v;
+
+	v.x = x;
+	v.y = y;
+	v.z = z;
+	return (v);
+}
+
 void	set_crosshair(void)
 {
 	t_grid_node	*origin;
@@ -49,11 +59,12 @@ void	set_crosshair(void)
 	dim->width = 2;
 	origin->color = 0xffffff;
 	origin->map_dim = dim;
-	origin->coords = (t_vec3){1, 0, 0};
+	origin->coords = vec3_stack_from(1, 0, 0);
 	engine->origin[0] = apply_projection(origin);
-	origin->coords = (t_vec3){0, 1, 0};
+	origin->coords = vec3_stack_from(0, 1, 0);
 	engine->origin[1] = apply_projection(origin);
-	origin->coords = (t_vec3){0, 0, 1};
+	origin->coords = vec3_stack_from(0, 0, 1);
 	engine->origin[2] = apply_projection(origin);
-	return (free(dim), free(origin));
+	free(dim);
+	free(origin);
 }

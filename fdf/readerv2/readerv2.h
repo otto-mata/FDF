@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   readerv2.h                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/26 20:53:38 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/27 01:17:00 by tblochet         ###   ########.fr       */
+/*                                                                            */
+/*   readerv2.h                                           ┌─┐┌┬┐┌┬┐┌─┐        */
+/*                                                        │ │ │  │ │ │        */
+/*   By: tblochet <tblochet@student.42.fr>                └─┘ ┴  ┴ └─┘        */
+/*                                                        ┌┬┐┌─┐┌┬┐┌─┐        */
+/*   Created: 2024/12/26 20:53:38 by tblochet             │││├─┤ │ ├─┤        */
+/*   Updated: 2025/01/03 02:05:17 by tblochet             ┴ ┴┴ ┴ ┴ ┴ ┴        */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define READERV2_H
 # include "../../libft/libft.h"
 # include "../../vec3/vec3.h"
+# include "../utils/fdf_utils.h"
 # include <fcntl.h>
 # include <stdbool.h>
 # include <stdlib.h>

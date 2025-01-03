@@ -1,20 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   render.c                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/17 22:45:15 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/27 12:28:03 by tblochet         ###   ########.fr       */
+/*                                                                            */
+/*   render.c                                             ┌─┐┌┬┐┌┬┐┌─┐        */
+/*                                                        │ │ │  │ │ │        */
+/*   By: tblochet <tblochet@student.42.fr>                └─┘ ┴  ┴ └─┘        */
+/*                                                        ┌┬┐┌─┐┌┬┐┌─┐        */
+/*   Created: 2024/12/17 22:45:15 by tblochet             │││├─┤ │ ├─┤        */
+/*   Updated: 2025/01/03 02:34:27 by tblochet             ┴ ┴┴ ┴ ┴ ┴ ┴        */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
 #include <sys/time.h>
+#include <math.h>
 
-static void	draw_nodes(t_grid_node *node) __attribute__((hot));
-int			draw_loop(t_grid_node *node) __attribute__((hot));
+static void			draw_nodes(t_grid_node *node) __attribute__((hot));
+int					draw_loop(t_grid_node *node) __attribute__((hot));
 
 void	send_destroy_notify(Display *dpy, Window target)
 {
@@ -75,13 +76,20 @@ static void	draw_nodes(t_grid_node *node)
 	}
 }
 
-struct		s_256bits
+struct				s_256bits
 {
-	long	a;
-	long	b;
-	long	c;
-	long	d;
+	long			a;
+	long			b;
+	long			c;
+	long			d;
 };
+
+struct s_256bits	zero256(void)
+{
+	const struct s_256bits	pad = {0, 0, 0, 0};
+
+	return (pad);
+}
 
 void	clear_image(void)
 {
@@ -96,7 +104,7 @@ void	clear_image(void)
 	i = 0;
 	while (i < (engine->img->line_length >> 5) * engine->config.height)
 	{
-		image[i] = (struct s_256bits){0, 0, 0, 0};
+		image[i] = zero256();
 		i++;
 	}
 }
@@ -135,7 +143,7 @@ int	draw_loop(t_grid_node *node)
 	engine->frametime = (double)(clock() - start_time) / ((__clock_t)1000);
 	setbuf(stdout, 0);
 	ft_printf("\rframetime: ~%dms | FPS: ~%d       ",
-		(int)nearbyint(engine->frametime), (int)round(1000
+		(int)__builtin_round(engine->frametime), (int)__builtin_round(1000
 			/ (engine->frametime)));
 	return (0);
 }
@@ -174,23 +182,23 @@ t_vec3	vec3_from_points(t_vec3 a, t_vec3 b)
 
 int	transform_view(int x, int y, t_engine *engine)
 {
-	t_vec3	mouse_vec;
+	const t_vec3	p_center = {WIDTH / 2,HEIGHT / 2, 0};
+	t_vec3			mouse_vec;
+	t_vec3			p_mouse;
 
 	if (engine->set_by == Button3)
 	{
 		engine->rot_x += (double)(engine->mouse_y - y) / 1000;
 		engine->rot_y += (double)(engine->mouse_x - x) / 1000;
-		// engine->rot_z += (double)(engine->mouse_y - y) / 1000
-		// 	+ (double)(engine->mouse_x - x) / 1000;
 	}
 	else if (engine->set_by == Button1)
 	{
 		engine->mouse_y = y;
 		engine->mouse_x = x;
-		return (0);
-		mouse_vec = vec3_from_points((t_vec3){WIDTH / 2, HEIGHT / 2, 0},
-				(t_vec3){x, y, 0});
-		printf("x: %f, y: %f\n", mouse_vec.x, mouse_vec.y);
+		p_mouse.x = x;
+		p_mouse.y = y;
+		p_mouse.z = 0;
+		mouse_vec = vec3_from_points(p_center, p_mouse);
 		engine->offset_x += 10 * mouse_vec.x;
 		engine->offset_y += 10 * mouse_vec.y;
 	}

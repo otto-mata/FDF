@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   draw.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/18 00:51:01 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/22 04:29:37 by tblochet         ###   ########.fr       */
+/*                                                                            */
+/*   draw.c                                               ┌─┐┌┬┐┌┬┐┌─┐        */
+/*                                                        │ │ │  │ │ │        */
+/*   By: tblochet <tblochet@student.42.fr>                └─┘ ┴  ┴ └─┘        */
+/*                                                        ┌┬┐┌─┐┌┬┐┌─┐        */
+/*   Created: 2024/12/18 00:51:01 by tblochet             │││├─┤ │ ├─┤        */
+/*   Updated: 2025/01/03 02:33:16 by tblochet             ┴ ┴┴ ┴ ┴ ┴ ┴        */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	c_lerp(int color1, int color2, double t)
 	return ((r << 16) | (g << 8) | b);
 }
 
-bool	node_in_screen(t_grid_node n)
+int	node_in_screen(t_grid_node n)
 {
 	t_engine	*engine;
 
@@ -37,7 +37,7 @@ bool	node_in_screen(t_grid_node n)
 		&& n.coords.y >= 0 && n.coords.y <= engine->config.height);
 }
 
-bool	draw(t_grid_node p)
+int	draw(t_grid_node p)
 {
 	t_engine	*engine;
 	int			offset;
@@ -77,7 +77,7 @@ static t_vec3	proj(t_grid_node p)
 	return (v);
 }
 
-bool	gs_line(t_grid_node *p1, t_grid_node *p2)
+int	gs_line(t_grid_node *p1, t_grid_node *p2)
 {
 	t_vec3		delta;
 	double		steps;
@@ -92,7 +92,8 @@ bool	gs_line(t_grid_node *p1, t_grid_node *p2)
 	delta.x = (proj(*p2).x - proj(*p1).x);
 	delta.y = (proj(*p2).y - proj(*p1).y);
 	delta.z = (proj(*p2).z - proj(*p1).z);
-	steps = fmax(fabs(delta.x), fmax(fabs(delta.y), fabs(delta.z)));
+	steps = __builtin_fmax(fabs(delta.x), __builtin_fmax(fabs(delta.y),
+				fabs(delta.z)));
 	step.x = delta.x / steps;
 	step.y = delta.y / steps;
 	step.z = delta.z / steps;

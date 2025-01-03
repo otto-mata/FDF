@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   extract_map_data.c                                 :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/26 23:16:37 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/27 12:02:43 by tblochet         ###   ########.fr       */
+/*                                                                            */
+/*   extract_map_data.c                                   ┌─┐┌┬┐┌┬┐┌─┐        */
+/*                                                        │ │ │  │ │ │        */
+/*   By: tblochet <tblochet@student.42.fr>                └─┘ ┴  ┴ └─┘        */
+/*                                                        ┌┬┐┌─┐┌┬┐┌─┐        */
+/*   Created: 2024/12/26 23:16:37 by tblochet             │││├─┤ │ ├─┤        */
+/*   Updated: 2025/01/03 01:52:51 by tblochet             ┴ ┴┴ ┴ ┴ ┴ ┴        */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "readerv2.h"
 
-static bool	populate_node(t_map_data *map, char *raw)
+static int	populate_node(t_map_data *map, char *raw)
 {
 	char	**values;
 	int		z_val;

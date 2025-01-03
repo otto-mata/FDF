@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   engine.c                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: tblochet <tblochet@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/17 23:13:59 by tblochet          #+#    #+#             */
-/*   Updated: 2024/12/27 12:26:02 by tblochet         ###   ########.fr       */
+/*                                                                            */
+/*   engine.c                                             ┌─┐┌┬┐┌┬┐┌─┐        */
+/*                                                        │ │ │  │ │ │        */
+/*   By: tblochet <tblochet@student.42.fr>                └─┘ ┴  ┴ └─┘        */
+/*                                                        ┌┬┐┌─┐┌┬┐┌─┐        */
+/*   Created: 2024/12/17 23:13:59 by tblochet             │││├─┤ │ ├─┤        */
+/*   Updated: 2025/01/03 02:12:28 by tblochet             ┴ ┴┴ ┴ ┴ ┴ ┴        */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ t_engine	*engine_instance(void)
 	return (engine);
 }
 
-bool	engine_init(t_grid_node *nodes, char *fname)
+int	engine_init(t_grid_node *nodes, char *fname)
 {
 	t_engine	*engine;
 	t_image		*img;
